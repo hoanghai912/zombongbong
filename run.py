@@ -9,7 +9,7 @@ def run():
     SCREEN_WIDTH = 750
     SCREEN_HEIGHT = 520
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("ZomBonkBonk")
+    pygame.display.set_caption("ZomBonk")
     pygame.display.update()
 
 
