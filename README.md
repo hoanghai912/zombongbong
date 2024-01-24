@@ -1,7 +1,7 @@
-# Project ZomBongBong
+# Project ZomBonkBonk
 
 ## Mô tả
-Game ZomBongBong sẽ có cách chơi giống game đập chuột. Trong đó đầu zombie sẽ hiện lên và người dùng sẽ phải click chuột vào để ghi điểm.
+Game ZomBonkBonk sẽ có cách chơi giống game đập chuột. Trong đó đầu zombie sẽ hiện lên và người dùng sẽ phải click chuột vào để ghi điểm.
 
 ## Tiêu chí
 - Thiết kế hình nền + nhiều chỗ xuất hiện zombie
