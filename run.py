@@ -45,6 +45,14 @@ class Zombie:
             if (self.dead_frame == 5): return False
             else: return True
         else:
+            if (self.appear_frame == 0):
+                channel = 0
+                for i in range(0, 2):
+                    if (not pygame.mixer.Channel(i).get_busy()): 
+                        channel = i
+                        break
+                pygame.mixer.Channel(channel).play(pygame.mixer.Sound("assets/dirt-rise.mp3"))
+                
             if (current_time - self.appear_time < self.disappear_time):
                 current_animate_time = pygame.time.get_ticks()
                 if current_animate_time - self.last_update >= animation_wait:
@@ -157,7 +165,11 @@ def run():
     miss = 0
 
     #Define text in game
-    text = Text(screen, r'assets\04B_19.TTF', 30, True)
+    text = Text(screen, r'assets\Daydream.TTF', 30, True)
+    
+    # Define sound
+    pygame.mixer.init()
+    pygame.mixer.set_num_channels(100)
 
     """Running Game Loop"""
     running = True
@@ -181,16 +193,17 @@ def run():
 
                 if (zom_delete): 
                     # zom_list.remove(zom_delete)
+                    pygame.mixer.find_channel().play(pygame.mixer.Sound("assets/bonk.mp3"))
                     point += 1
                 else: miss += 1
 
         screen.blit(background, (0,0))
         
         text.render('SCORE: ' + str(point), 10, 10, color='green')
-        text.render('MISS: ' + str(miss), 250, 10, color="red")
+        text.render('MISS: ' + str(miss), 10, 60, color="red")
         accuracy = (point*1.0 / (point + miss)) * 100 if point+miss != 0 else 0
         if round(accuracy,2) == 100.00 and miss > 0 : accuracy = 99.99
-        text.render('ACCURACY: ' + str(round(accuracy, 2)) + " %", 10, 50, color="Yellow")
+        text.render('ACCURACY: ' + str(round(accuracy, 2)) + "%", 10, 110, color="Yellow")
 
         # sp1 = sprite_list_dead[6]
         # screen.blit(sp1, (720, 50))
