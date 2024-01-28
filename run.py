@@ -15,42 +15,60 @@ class Zombie:
         self.width = width
         self.height = height
         self.appear_frame = 0
+        self.dead_frame = 0
+        
         self.sprite_list_appear = sprite_list_appear
+        self.sprite_list_dead = sprite_list_dead
 
         self.last_update = pygame.time.get_ticks()
         self.appear_time = pygame.time.get_ticks()
-        self.disappear_time = random.randint(3000, 5000)
+        self.disappear_time = random.randint(2000, 4000)
         self.head_rect = None
+        
+        # Flag
+        self.is_killed = False
 
     def display(self):
         pass
         current_time = pygame.time.get_ticks()
         animation_wait = 100
-        if (current_time - self.appear_time < self.disappear_time):
+        if (self.is_killed):
             current_animate_time = pygame.time.get_ticks()
             if current_animate_time - self.last_update >= animation_wait:
-                if self.appear_frame < 6: self.appear_frame += 1
+                if self.dead_frame < 5: self.dead_frame += 1
                 self.last_update = current_animate_time
             
-            current_sprite = self.sprite_list_appear[self.appear_frame]
+            current_sprite = self.sprite_list_dead[self.dead_frame]
 
-            self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
-            if (self.appear_frame == 6): 
-                self.head_rect = pygame.Rect(self.x + self.sprite_list_appear[-1].get_size()[0] / 4.1, self.y + self.sprite_list_appear[-1].get_size()[0] / 8, 103, 73)
-                # pygame.draw.rect(self.screen, (0, 0, 255), self.head_rect)
-            return True
-        elif (current_time - self.appear_time > self.disappear_time + 1000):
-            return False
+            self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 80/2 - current_sprite.get_size()[1] / 2))
+            if (self.dead_frame == 5): return False
+            else: return True
         else:
-            current_animate_time = pygame.time.get_ticks()
-            if current_animate_time - self.last_update >= animation_wait:
-                if self.appear_frame > 0: self.appear_frame -= 1
-                self.last_update = current_animate_time
-            
-            current_sprite = self.sprite_list_appear[self.appear_frame]
-            self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
-            return True
-    
+            if (current_time - self.appear_time < self.disappear_time):
+                current_animate_time = pygame.time.get_ticks()
+                if current_animate_time - self.last_update >= animation_wait:
+                    if self.appear_frame < 6: self.appear_frame += 1
+                    self.last_update = current_animate_time
+                
+                current_sprite = self.sprite_list_appear[self.appear_frame]
+
+                self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
+                if (self.appear_frame == 6): 
+                    self.head_rect = pygame.Rect(self.x + self.sprite_list_appear[-1].get_size()[0] / 4.1, self.y + self.sprite_list_appear[-1].get_size()[0] / 8, 103, 73)
+                    # pygame.draw.rect(self.screen, (0, 0, 255), self.head_rect)
+                return True
+            elif (current_time - self.appear_time > self.disappear_time + 1000):
+                return False
+            else:
+                current_animate_time = pygame.time.get_ticks()
+                if current_animate_time - self.last_update >= animation_wait:
+                    if self.appear_frame > 0: self.appear_frame -= 1
+                    self.last_update = current_animate_time
+                
+                current_sprite = self.sprite_list_appear[self.appear_frame]
+                self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
+                return True
+        
 
         
 
@@ -118,6 +136,15 @@ def run():
     sprite_list_appear.append(zom_sprites_appear.get_sprite(114 * 4, 0, 114, 158))
     sprite_list_appear.append(zom_sprites_appear.get_sprite(114 * 5, 0, 114, 158))
     sprite_list_appear.append(zom_sprites_appear.get_sprite(114 * 6, 0, 114, 158))
+    
+    zom_sprites_dead = Spritesheet("imgs/zom_sprite_3.png")
+    sprite_list_dead = []
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(0, 0, 133, 203))
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(133, 0, 133, 203))
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(133 * 2, 0, 133, 203))
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(133 * 3, 0, 133, 203))
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(133 * 4, 0, 133, 203))
+    sprite_list_dead.append(zom_sprites_dead.get_sprite(133 * 5, 0, 133, 203))
 
     # Define list to handle zombies
     zom_list = []
@@ -148,10 +175,11 @@ def run():
                     if (zom.head_rect):
                         if zom.head_rect.collidepoint(event.pos):
                             zom_delete = zom
+                            zom.is_killed = True
                             break
 
                 if (zom_delete): 
-                    zom_list.remove(zom_delete)
+                    # zom_list.remove(zom_delete)
                     point += 1
                 else: miss += 1
 
@@ -162,14 +190,15 @@ def run():
         accuracy = (point*1.0 / (point + miss)) * 100 if point+miss != 0 else 0
         text.render('ACCURACY: ' + str(round(accuracy, 2)) + "%", 10, 50, color="Yellow")
 
-        # sp1 = zom_sprites.get_sprite(228, 0, 114, 158)
-        # screen.blit(sp1, zom_pos_list[0])
+        # sp1 = sprite_list_dead[6]
+        # screen.blit(sp1, (720, 50))
+        
         # Screen always have n zombies
         if len(zom_list) < 5:
             zom_pos = random.choice(tomb_pos_list)
             while (not check_exits_zom_pos(zom_list, zom_pos)):
                 zom_pos = random.choice(tomb_pos_list)
-            zom = Zombie(screen, zom_pos[0], zom_pos[1], sprite_list_appear=sprite_list_appear)
+            zom = Zombie(screen, zom_pos[0], zom_pos[1], sprite_list_appear=sprite_list_appear, sprite_list_dead=sprite_list_dead)
             zom_list.append(zom)
 
         # Display zombie in zom_list
@@ -177,7 +206,7 @@ def run():
             if (not zom.display()):
                 zom_list.remove(zom)
 
-        pygame.display.update() # Update screen
+        pygame.display.flip() # Update screen
         clock.tick(240) # FPS set to 60
 
 run()
