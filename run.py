@@ -29,12 +29,12 @@ class Zombie:
         self.last_update = pygame.time.get_ticks()
         self.appear_time = pygame.time.get_ticks()
         self.disappear_time = random.randint(5000, 10000)
-        self.head_rect = ""
+        self.head_rect = None
 
     def display(self):
         pass
         current_time = pygame.time.get_ticks()
-        animation_wait = 200
+        animation_wait = 100
         if (current_time - self.appear_time < self.disappear_time):
             current_animate_time = pygame.time.get_ticks()
             if current_animate_time - self.last_update >= animation_wait:
@@ -42,7 +42,7 @@ class Zombie:
                 self.last_update = current_animate_time
             
             current_sprite = self.sprite_list[self.appear_frame]
-            
+
             self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
             if (self.appear_frame == 6): 
                 self.head_rect = pygame.Rect(self.x + self.sprite_list[-1].get_size()[0] / 4.1, self.y + self.sprite_list[-1].get_size()[0] / 8, 103, 73)
@@ -51,7 +51,16 @@ class Zombie:
         elif (current_time - self.appear_time > self.disappear_time + 2000):
             return False
         else:
+            current_animate_time = pygame.time.get_ticks()
+            if current_animate_time - self.last_update >= animation_wait:
+                if self.appear_frame > 0: self.appear_frame -= 1
+                self.last_update = current_animate_time
+            
+            current_sprite = self.sprite_list[self.appear_frame]
+            self.screen.blit(current_sprite, (self.x + 147 / 2 - current_sprite.get_size()[0] / 2, self.y + 155/2 - current_sprite.get_size()[1] / 2))
             return True
+    
+
         
 
 # Sprite Sheet processing
@@ -102,13 +111,11 @@ def run():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock() # For set frame per second (FPS)
     pygame.display.set_caption("ZomBonk")
-    # pygame.display.update()
 
     #Set background image
     background = pygame.image.load("imgs/game_background.png")
     background = pygame.transform.smoothscale(background, (SCREEN_WIDTH, SCREEN_HEIGHT)).convert_alpha()
     screen.blit(background, (0,0))
-    # pygame.display.update()
 
     # Load sprite sheet zombie
     zom_sprites = Spritesheet("imgs/zom_sprite_2.png")
@@ -148,10 +155,6 @@ def run():
                     zom_list.remove(zom_delete)
                     point += 1
                 else: miss += 1
-
-                print(point, miss)
-
-
 
         screen.blit(background, (0,0))
         
