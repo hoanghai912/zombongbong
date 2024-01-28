@@ -22,7 +22,7 @@ class Zombie:
 
         self.last_update = pygame.time.get_ticks()
         self.appear_time = pygame.time.get_ticks()
-        self.disappear_time = random.randint(2000, 4000)
+        self.disappear_time = random.randint(2000, 3000)
         self.head_rect = None
         
         # Flag
@@ -32,9 +32,10 @@ class Zombie:
         pass
         current_time = pygame.time.get_ticks()
         animation_wait = 100
+        animation_dead_wait = 175
         if (self.is_killed):
             current_animate_time = pygame.time.get_ticks()
-            if current_animate_time - self.last_update >= animation_wait:
+            if current_animate_time - self.last_update >= animation_dead_wait:
                 if self.dead_frame < 5: self.dead_frame += 1
                 self.last_update = current_animate_time
             
@@ -156,7 +157,7 @@ def run():
     miss = 0
 
     #Define text in game
-    text = Text(screen, r'assets\Bungee-Regular.ttf', 30, True)
+    text = Text(screen, r'assets\04B_19.TTF', 30, True)
 
     """Running Game Loop"""
     running = True
@@ -188,7 +189,8 @@ def run():
         text.render('SCORE: ' + str(point), 10, 10, color='green')
         text.render('MISS: ' + str(miss), 250, 10, color="red")
         accuracy = (point*1.0 / (point + miss)) * 100 if point+miss != 0 else 0
-        text.render('ACCURACY: ' + str(round(accuracy, 2)) + "%", 10, 50, color="Yellow")
+        if round(accuracy,2) == 100.00 and miss > 0 : accuracy = 99.99
+        text.render('ACCURACY: ' + str(round(accuracy, 2)) + " %", 10, 50, color="Yellow")
 
         # sp1 = sprite_list_dead[6]
         # screen.blit(sp1, (720, 50))
