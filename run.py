@@ -171,6 +171,9 @@ def run():
     # Define sound
     pygame.mixer.init()
     pygame.mixer.set_num_channels(100)
+    
+    pygame.mixer.Channel(99).set_volume(0.4)
+    pygame.mixer.Channel(99).play(pygame.mixer.Sound("assets/bg_sound.mp3"), -1)
 
     """Running Game Loop"""
     running = True
@@ -194,7 +197,7 @@ def run():
 
                 if (zom_delete): 
                     # zom_list.remove(zom_delete)
-                    pygame.mixer.find_channel().play(pygame.mixer.Sound("assets/bonk.mp3"))
+                    pygame.mixer.find_channel().play(pygame.mixer.Sound("assets/bonk2.mp3"))
                     point += 1
                 else: miss += 1
 
