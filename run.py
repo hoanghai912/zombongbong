@@ -69,6 +69,7 @@ class Zombie:
             elif (current_time - self.appear_time > self.disappear_time + 1000):
                 return False
             else:
+                self.head_rect = None
                 current_animate_time = pygame.time.get_ticks()
                 if current_animate_time - self.last_update >= animation_wait:
                     if self.appear_frame > 0: self.appear_frame -= 1
